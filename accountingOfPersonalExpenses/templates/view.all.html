@@ -1,0 +1,20 @@
+{% extends "index.html" %}
+{% block title %}Просмотр расходов за все время{% endblock %}
+{% block content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Месяц.Год</th>
+                <th>Суммарное количество расходов</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for expense in expenses %}
+                <tr>
+                    <td scope="row">{{ expense.date }}</td>
+                    <td scope="row">{{ expense.sum }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

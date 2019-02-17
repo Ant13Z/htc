@@ -1,0 +1,39 @@
+{% extends "index.html" %}
+{% block title %}Добавление расхода{% endblock %}
+{% block content %}
+    <div class="col-md-3">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_categories">{{ form.categories.label }}</label>
+                <div class="input-group">
+                    {{ form.categories }}
+                    <div class="input-group-append">
+                        <span class="input-group-text list-group-item-danger">*</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_date">{{ form.date.label }}</label>
+                <div class="input-group">
+                    {{ form.date }}
+                    <div class="input-group-append">
+                        <span class="input-group-text list-group-item-danger">*</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_expenses">{{ form.expenses.label }}</label>
+                <div class="input-group">
+                    {{ form.expenses }}
+                    <div class="input-group-append">
+                        <span class="input-group-text list-group-item-danger">*</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Добавить</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

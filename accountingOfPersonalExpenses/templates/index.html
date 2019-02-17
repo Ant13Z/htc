@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}[цвт] тестовое python{% endblock %}</title>
+    <link
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.0/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-PDle/QlgIONtM1aqA2Qemk5gPOE7wFq8+Em+G/hmo5Iq0CCmYZLv3fVRDJ4MMwEA"
+            crossorigin="anonymous"
+    >
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static "css/main.css" %}" />
+    <script>
+        $(function(){
+            if($(".datepicker").length > 0)
+                $(".datepicker").datepicker({ dateFormat: 'dd-mm-yy'}).datepicker("setDate", new Date());
+        });
+    </script>
+</head>
+<body>
+    <div class="app">
+        {% if back %}
+            <div class="col-md-3">
+                <a href="/" class="btn btn-primary margin20-0">Вернуться</a>
+            </div>
+        {% endif %}
+        {% block content %}
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <a href="/add/">Добавление нового расхода</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="/view/month/">Просмотр расходов за месяц</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="/view/all/">Просмотр расходов за все время</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="/categories/">Редактирование категорий</a>
+                </li>
+            </ul>
+        {% endblock %}
+    </div>
+</body>
+</html>

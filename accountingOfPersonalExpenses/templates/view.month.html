@@ -1,0 +1,43 @@
+{% extends "index.html" %}
+{% block title %}Просмотр расходов за месяц{% endblock %}
+{% block content %}
+    <div class="col-md-3">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_month">{{ form.month.label }}</label>
+                <div class="input-group">
+                    {{ form.month }}
+                    <div class="input-group-append">
+                        <span class="input-group-text list-group-item-danger">*</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Отобразить статистику</button>
+            </div>
+        </form>
+    </div>
+    {% if expenses %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>День месяца\Категория</th>
+                    {% for key, val in categories.items %}
+                        <th>{{ val }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for day, expense_day in expenses.items %}
+                    <tr>
+                        <th scope="row">{{ day }}</th>
+                        {% for key, val in expense_day.items %}
+                            <td>{{ val }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
