@@ -1,12 +1,10 @@
 from django.apps import AppConfig
 
 
-# не особо понятно "предельная сумма месячных расходов" -
-# это лимит на каждый месяц или общий на все месяцы (сделаем на каждый)
-class LimitConfig(AppConfig):
+class AccountingOfPersonalExpensesConfig(AppConfig):
     name = 'accountingOfPersonalExpenses'
     # adaptive\increment
-    script = 'adaptive'
+    script = 'increment'
     limit_months = {
         "02.2019": 100,
         "03.2019": 100,

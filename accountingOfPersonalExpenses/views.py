@@ -3,21 +3,19 @@ from django.http import HttpResponseRedirect
 from django.db.models import Sum
 from .forms import FormExpenses, FormCategories, FormExpensesMonth
 from .models import Expenses, Categories
-# from .apps import LimitConfig
-# from django.apps import apps
+from django.apps import apps
 import json
+from datetime import date
 
 
 def index(request):
-    # print(LimitConfig.limit_months)
-    # print(accountingOfPersonalExpenses.get_app_configs())
-
     return render(request, "index.html", {
         "back": False
     })
 
 
 def add(request):
+    notice = False
     if request.method == "POST":
         form = FormExpenses(request.POST)
         if form.is_valid():
@@ -30,13 +28,23 @@ def add(request):
                 expenses=form.cleaned_data['expenses']
             )
             print("Ид нового расхода: ", expense.id)
+            # просчитываем лимиты
+            config = apps.get_containing_app_config("accountingOfPersonalExpenses")
+            if hasattr(config, 'script') and hasattr(config, 'limit_months'):
+                notice = Expenses.objects.overrun(
+                    config.script,
+                    Expenses.objects.get_expenses_months(),
+                    config.limit_months,
+                    form.cleaned_data['expenses'],
+                    date(form.cleaned_data['date'].year, form.cleaned_data['date'].month, 1)
+                )
         else:
             print(json.dumps(form.errors))
-        return HttpResponseRedirect("/")
 
     return render(request, "add.html", {
         "form": FormExpenses(),
-        "back": True
+        "back": True,
+        "notice": notice
     })
 
 
@@ -121,7 +129,7 @@ def view_month(request):
                     days_result[id_categories] += category_expense
                 dict_result[day]["0"] = sum(day_expenses.values())
 
-            days_result["0"] = "Всего: " + str(sum(days_result.values()))
+            days_result["0"] = "Всего: {}".format(sum(days_result.values()))
             dict_result["Сумм категории"] = days_result
             dict_categories["0"] = "Сумм дни"
         else:
@@ -136,19 +144,7 @@ def view_month(request):
 
 
 def view_all(request):
-    ans_expenses = Expenses.objects \
-        .values('dateY', 'dateM') \
-        .order_by('dateY', 'dateM') \
-        .annotate(expenses_sum=Sum('expenses'))
-
-    # проблема не в бд и не в sql-е (делал вариант с round), проблема в orm
-    resp_expenses = []
-    for val in ans_expenses:
-        resp_expenses.append({
-            'date': '{}.{}'.format(val['dateM'], val['dateY']),
-            'sum': round(val['expenses_sum'], 2)
-        })
     return render(request, "view.all.html", {
         'back': True,
-        'expenses': resp_expenses
+        'expenses': Expenses.objects.get_expenses_months()
     })

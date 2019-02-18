@@ -1,6 +1,13 @@
 {% extends "index.html" %}
 {% block title %}Добавление расхода{% endblock %}
 {% block content %}
+    {% if notice %}
+        <div class="col-md-3 list-group">
+            <a href="#" class="list-group-item list-group-item-action list-group-item-danger">
+                Вы превысили лимит в текущем месяце, увеличьте его
+            </a>
+        </div>
+    {% endif %}
     <div class="col-md-3">
         <form method="post">
             {% csrf_token %}

@@ -9,10 +9,10 @@
             </tr>
         </thead>
         <tbody>
-            {% for expense in expenses %}
+            {% for date, sum in expenses.items %}
                 <tr>
-                    <td scope="row">{{ expense.date }}</td>
-                    <td scope="row">{{ expense.sum }}</td>
+                    <td scope="row">{{ date }}</td>
+                    <td scope="row">{{ sum }}</td>
                 </tr>
             {% endfor %}
         </tbody>
