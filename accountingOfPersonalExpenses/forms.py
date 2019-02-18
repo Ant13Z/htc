@@ -5,7 +5,7 @@ from .models import Expenses, Categories
 
 class FormExpenses(forms.Form):
     categories = forms.ChoiceField(
-        choices=tuple(Categories.objects.values_list(named=True).all()),
+        choices=(),
         widget=forms.Select(attrs={"class": "form-control"}),
         label="Категория"
     )
@@ -21,6 +21,10 @@ class FormExpenses(forms.Form):
         max_value=1e9,
         decimal_places=2
     )
+
+    def __init__(self, *args, **kwargs):
+        super(FormExpenses, self).__init__(*args, **kwargs)
+        self.fields["categories"].choices = tuple(Categories.objects.values_list(named=True).all())
 
 
 class FormCategories(forms.Form):
