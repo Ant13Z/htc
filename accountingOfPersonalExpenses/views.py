@@ -32,9 +32,9 @@ def add(request):
                 category = Categories.objects.get(id=form.cleaned_data['categories'])
                 expense = category.expenses_set.create(
                     date=form.cleaned_data['date'],
-                    dateD=form.cleaned_data['date'].day,
-                    dateM=form.cleaned_data['date'].month,
-                    dateY=form.cleaned_data['date'].year,
+                    date_d=form.cleaned_data['date'].day,
+                    date_m=form.cleaned_data['date'].month,
+                    date_y=form.cleaned_data['date'].year,
                     expenses=form.cleaned_data['expenses']
                 )
                 print("Ид нового расхода: ", expense.id)
@@ -85,20 +85,20 @@ def view_month(request):
             # получаем данные для таблицы
             input_date = form.cleaned_data['month']
             ans_expenses = Expenses.objects\
-                .values('dateD', 'categories_id')\
-                .filter(dateY=input_date.split(".")[1], dateM=input_date.split(".")[0])\
+                .values('date_d', 'categories_id')\
+                .filter(date_y=input_date.split(".")[1], date_m=input_date.split(".")[0])\
                 .annotate(expenses_sum=Sum('expenses'))
 
             # преобразуем данные для быстро поиска + получим список используемых категорий
             dict_expenses = {}
             list_categories = []
             for val in ans_expenses:
-                if val['dateD'] not in dict_expenses:
-                    dict_expenses[val['dateD']] = {}
-                if val['categories_id'] not in dict_expenses[val['dateD']]:
-                    dict_expenses[val['dateD']][val['categories_id']] = {}
+                if val['date_d'] not in dict_expenses:
+                    dict_expenses[val['date_d']] = {}
+                if val['categories_id'] not in dict_expenses[val['date_d']]:
+                    dict_expenses[val['date_d']][val['categories_id']] = {}
                 # словарь на манер дерева
-                dict_expenses[val['dateD']][val['categories_id']] = round(val['expenses_sum'], 2)
+                dict_expenses[val['date_d']][val['categories_id']] = round(val['expenses_sum'], 2)
                 # используемые категории
                 list_categories.append(val['categories_id'])
 

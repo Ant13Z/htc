@@ -48,9 +48,9 @@ class FormExpensesMonth(forms.Form):
         # возможно, имеет смысл перенести это во views, но с точки зрения логики это более верно
         # скорее всего подход не особо правильный, но в документации ничего нет
         # (https://docs.djangoproject.com/en/2.1/ref/forms/api/#bound-and-unbound-forms)
-        ans_form = Expenses.objects.values('dateY', 'dateM').order_by('dateY', 'dateM').annotate(Count('dateY'))
+        ans_form = Expenses.objects.values('date_y', 'date_m').order_by('date_y', 'date_m').annotate(Count('date_y'))
         list_form = []
         for val in ans_form:
-            temp = '{}.{}'.format(val["dateM"], val["dateY"])
+            temp = '{}.{}'.format(val["date_m"], val["date_y"])
             list_form.append([temp, temp])
         self.fields["month"].choices = list_form

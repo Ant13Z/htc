@@ -9,12 +9,12 @@ class Categories(models.Model):
 
 class ExpensesManager(models.Manager):
     def get_expenses_months(self):
-        ans_expenses = self.values('dateY', 'dateM')\
-            .order_by('dateY', 'dateM')\
+        ans_expenses = self.values('date_y', 'date_m')\
+            .order_by('date_y', 'date_m')\
             .annotate(expenses_sum=models.Sum('expenses'))
         resp_expenses = {}
         for val in ans_expenses:
-            resp_expenses[date(val['dateY'], val['dateM'], 1).strftime("%m.%Y")] = round(val['expenses_sum'], 2)
+            resp_expenses[date(val['date_y'], val['date_m'], 1).strftime("%m.%Y")] = round(val['expenses_sum'], 2)
         return resp_expenses
 
     def overrun(self, script, expenses_months, limit_months, expense, input_date):
@@ -57,9 +57,9 @@ class Expenses(models.Model):
 
     categories = models.ForeignKey(Categories, on_delete=models.CASCADE)
     date = models.DateField()
-    dateD = models.PositiveSmallIntegerField()
-    dateM = models.PositiveSmallIntegerField()
-    dateY = models.PositiveSmallIntegerField()
+    date_d = models.PositiveSmallIntegerField()
+    date_m = models.PositiveSmallIntegerField()
+    date_y = models.PositiveSmallIntegerField()
     expenses = models.DecimalField(max_digits=12, decimal_places=2)
 
 
