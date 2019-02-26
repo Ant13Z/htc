@@ -15,36 +15,37 @@ def index(request):
 
 
 def add(request):
-    notice = False
+    status_overrun = {"status": "ok"}
     if request.method == "POST":
         form = FormExpenses(request.POST)
         if form.is_valid():
-            category = Categories.objects.get(id=form.cleaned_data['categories'])
-            expense = category.expenses_set.create(
-                date=form.cleaned_data['date'],
-                dateD=form.cleaned_data['date'].day,
-                dateM=form.cleaned_data['date'].month,
-                dateY=form.cleaned_data['date'].year,
-                expenses=form.cleaned_data['expenses']
-            )
-            print("Ид нового расхода: ", expense.id)
-            # просчитываем лимиты
             config = apps.get_containing_app_config("accountingOfPersonalExpenses")
             if hasattr(config, 'script') and hasattr(config, 'limit_months'):
-                notice = Expenses.objects.overrun(
+                status_overrun = Expenses.objects.overrun(
                     config.script,
                     Expenses.objects.get_expenses_months(),
                     config.limit_months,
                     form.cleaned_data['expenses'],
                     date(form.cleaned_data['date'].year, form.cleaned_data['date'].month, 1)
                 )
+            if status_overrun["status"] not in "current-overrun":
+                category = Categories.objects.get(id=form.cleaned_data['categories'])
+                expense = category.expenses_set.create(
+                    date=form.cleaned_data['date'],
+                    dateD=form.cleaned_data['date'].day,
+                    dateM=form.cleaned_data['date'].month,
+                    dateY=form.cleaned_data['date'].year,
+                    expenses=form.cleaned_data['expenses']
+                )
+                print("Ид нового расхода: ", expense.id)
         else:
             print(json.dumps(form.errors))
 
     return render(request, "add.html", {
         "form": FormExpenses(),
         "back": True,
-        "notice": notice
+        "notice": status_overrun,
+        "statuses": ('current-overrun', 'increment-overrun', 'adaptive-overrun')
     })
 
 

@@ -1,13 +1,27 @@
 {% extends "index.html" %}
 {% block title %}Добавление расхода{% endblock %}
 {% block content %}
-    {% if notice %}
+    {% if notice.status == 'current-overrun' %}
         <div class="col-md-3 list-group">
             <a href="#" class="list-group-item list-group-item-action list-group-item-danger">
-                Вы превысили лимит в текущем месяце, увеличьте его
+                Ваш лимит исчерпан, новый расход не был добавлен<br>
             </a>
         </div>
     {% endif %}
+    {% if notice.status in statuses %}
+        <div class="col-md-3 list-group">
+            <a href="#" class="list-group-item list-group-item-action list-group-item-danger">
+                Вы превысили свой лимит за <b>{{ notice.date }}</b> на <b>{{ notice.overrun }}</b><br>
+                Для дальнейшего добавления расходов за <b>{{ notice.date }}</b>, увеличьте соответствующий лимит<br>
+                Текущий установленный лимит <b>{{ notice.limit }}</b><br>
+                Расход за текущий месяц <b>{{ notice.current_months_expenses }}</b>
+                {% if notice.lost_months_overrun %}
+                <br>Перерасход за прошлый месяц <b>{{ notice.lost_months_overrun }}</b>
+                {% endif %}
+            </a>
+        </div>
+    {% endif %}
+
     <div class="col-md-3">
         <form method="post">
             {% csrf_token %}
